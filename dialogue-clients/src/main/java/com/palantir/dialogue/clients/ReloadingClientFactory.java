@@ -83,15 +83,15 @@ final class ReloadingClientFactory implements DialogueClients.ReloadingFactory {
     public <T> T get(Class<T> serviceClass, String serviceName) {
         Channel channel = getChannel(serviceName);
         ConjureRuntime runtime = params.runtime();
-        return Reflection.callStaticFactoryMethod(serviceClass, channel, runtime);
+        return Reflection.constructUsingStaticFactory(serviceClass, channel, runtime);
     }
 
     @Override
     public <T> T getNonReloading(Class<T> clazz, ServiceConfiguration serviceConf) {
-        Channel channel = cache.getNonReloadingChannel(
+        DialogueChannel channel = cache.getNonReloadingChannel(
                 params, serviceConf, ChannelNames.nonReloading(clazz, params), OptionalInt.empty());
 
-        return Reflection.callStaticFactoryMethod(clazz, channel, params.runtime());
+        return Reflection.constructUsingStaticFactory(clazz, channel, params.runtime());
     }
 
     @Override
@@ -169,7 +169,7 @@ final class ReloadingClientFactory implements DialogueClients.ReloadingFactory {
             @Override
             public <T> Refreshable<List<T>> getPerHost(Class<T> clientInterface) {
                 return getPerHostChannels().map(channels -> channels.stream()
-                        .map(chan -> Reflection.callStaticFactoryMethod(clientInterface, chan, params.runtime()))
+                        .map(chan -> Reflection.constructUsingStaticFactory(clientInterface, chan, params.runtime()))
                         .collect(ImmutableList.toImmutableList()));
             }
 
@@ -213,7 +213,7 @@ final class ReloadingClientFactory implements DialogueClients.ReloadingFactory {
 
             @Override
             public <T> T getCurrentBest(Class<T> clientInterface) {
-                return Reflection.callStaticFactoryMethod(clientInterface, getStickyChannel(), params.runtime());
+                return Reflection.constructUsingStaticFactory(clientInterface, getStickyChannel(), params.runtime());
             }
 
             @Override
