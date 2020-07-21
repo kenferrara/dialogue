@@ -415,6 +415,7 @@ public final class ApacheHttpClientChannels {
                     .setMaxConnTotal(Integer.MAX_VALUE)
                     .setValidateAfterInactivity(CONNECTION_INACTIVITY_CHECK)
                     .setDnsResolver(new InstrumentedDnsResolver(SystemDefaultDnsResolver.INSTANCE))
+                    .setConnectionFactory(DialogueConnectionFactory.INSTANCE)
                     .build();
 
             setupConnectionPoolMetrics(conf.taggedMetricRegistry(), name, connectionManager);
